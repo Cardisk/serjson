@@ -176,7 +176,9 @@ json::Object json::read(const std::string &path) {
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "misc-no-recursion"
 std::string json_node_to_string(json::Node &node) {
-    std::string str = "\"" + node.key + "\": ";
+    std::string str;
+    if (!node.key.empty())
+        str += "\"" + node.key + "\": ";
     switch (node.type) {
         case json::string:
             str += "\"" + node.get_value<std::string>() + "\"";
@@ -201,8 +203,8 @@ std::string json_node_to_string(json::Node &node) {
                     if (i < nodes.size() - 1) str += ", ";
                 }
 
-                if (node.type == json::object) str += "}";
-                else str += "]";
+                if (node.type == json::object) str += " }";
+                else str += " ]";
             }
             break;
         case json::null:
