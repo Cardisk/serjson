@@ -12,8 +12,8 @@ that contains all the necessary things to save your objects inside
 a *JSON* file.
 
 Taking inspiration from *Java*, your class/struct needs to
-extend `Serializable` abstract class.
-You need to override two methods called `serialize()` and `deserialize()`.
+extend `Serializable` abstract class, and you need to override 
+the method `serialize()`.
 
 ## Writing JSON files
 
@@ -55,7 +55,7 @@ When you decide to create a file, all you need to do is creating
 a `json::Object` and setting a value to *file_path*.
 Note: if the specified file does not exist, it will create it for you.
 
-Now you have a representation of the json, but it's empty.
+Now you have a representation of the JSON, but it's empty.
 To populate it you simply have to call **add_node(Serializable &obj, Object &json)**
 with all the objects you want to save.
 
@@ -65,4 +65,30 @@ and store your objects inside.
 
 ## Reading JSON files
 
-***WORK IN PROGRESS***
+Reading a JSON file is easier than writing a new one.
+
+You only need to call `Object read(const std::string &path)`
+specifying the file path. It will return a representation of 
+the structure made with `json::Node`s.
+
+## Accessing elements
+
+You can access the elements with the operator `[ ]`.
+Both `json::Node` and `json::Object` have two implementations:
+one that accepts a `std::string` parameter and one that accepts
+an `int`.
+
+To obtain a value stored inside a `json::Node` there is a method
+called `template <typename T> T &get_value()`.
+You need to specify the type that you are retrieving and if you
+provide the wrong type it will generate a `std::bad_variant_access`
+exception.
+
+## Limitations
+
+- C++ does not provide any reflection API, for this reason the object
+  reconstruction is left to the user.
+- [WIP] The reading action cannot handle non-formatted JSON files, 'cause
+  the tokenization process require spaces between different tokens.
+  It is recommended to use a JSON beautifier before passing it to this
+  library.
