@@ -141,7 +141,6 @@ namespace json {
     class Serializable {
     public:
         virtual json::Node serialize() = 0;
-        virtual void deserialize() = 0;
     };
 
     // read from file
