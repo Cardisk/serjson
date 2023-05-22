@@ -114,6 +114,10 @@ namespace json {
             return !empty() && nodes[0].key.empty();
         }
 
+        void clear() {
+            this->nodes.clear();
+        }
+
         Node &operator[] (const std::string& key) {
             static Node empty { .type = ObjType::empty, .key = "", .value = "" };
 
