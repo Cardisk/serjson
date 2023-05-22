@@ -29,23 +29,24 @@ namespace json {
         std::string key;
         std::variant<std::string, float, std::vector<Node>, bool> value;
 
-        template <typename T> T &get_value() {
+        template<typename T>
+        T &get_value() {
             return std::get<T>(value);
         }
 
-        Node &operator[] (const std::string &k) {
-            static Node empty { .type = ObjType::empty, .key = "", .value = "" };
+        Node &operator[](const std::string &k) {
+            static Node empty{.type = ObjType::empty, .key = "", .value = ""};
             if (type != ObjType::object) return empty;
 
-            for (auto& n : get_value<std::vector<Node>>()) {
+            for (auto &n: get_value<std::vector<Node>>()) {
                 if (n.key == k) return n;
             }
 
             return empty;
         }
 
-        Node &operator[] (const int index) {
-            static Node empty { .type = ObjType::empty, .key = "", .value = "" };
+        Node &operator[](const int index) {
+            static Node empty{.type = ObjType::empty, .key = "", .value = ""};
             if (type != ObjType::array) return empty;
 
             if (get_value<std::vector<Node>>().empty()) return empty;
@@ -63,30 +64,28 @@ namespace json {
                 case number:
                     os << node.get_value<float>();
                     break;
-                case object:
-                    {
-                        std::vector<Node> v = node.get_value<std::vector<Node>>();
-                        os << "{ ";
-                        for (int i = 0; i < v.size(); ++i) {
-                            if (i > 0) os << ", ";
-                            os << v[i];
-                        }
-                        os << " } ";
+                case object: {
+                    std::vector<Node> v = node.get_value<std::vector<Node>>();
+                    os << "{ ";
+                    for (int i = 0; i < v.size(); ++i) {
+                        if (i > 0) os << ", ";
+                        os << v[i];
                     }
+                    os << " } ";
+                }
                     break;
                 case null:
                     os << node.get_value<std::string>();
                     break;
-                case array:
-                    {
-                        std::vector<Node> v = node.get_value<std::vector<Node>>();
-                        os << "[ ";
-                        for (int i = 0; i < v.size(); ++i) {
-                            if (i > 0) os << ", ";
-                            os << v[i];
-                        }
-                        os << " ] ";
+                case array: {
+                    std::vector<Node> v = node.get_value<std::vector<Node>>();
+                    os << "[ ";
+                    for (int i = 0; i < v.size(); ++i) {
+                        if (i > 0) os << ", ";
+                        os << v[i];
                     }
+                    os << " ] ";
+                }
                     break;
                 case boolean:
                     os << std::boolalpha;
@@ -118,25 +117,25 @@ namespace json {
             this->nodes.clear();
         }
 
-        Node &operator[] (const std::string& key) {
-            static Node empty { .type = ObjType::empty, .key = "", .value = "" };
+        Node &operator[](const std::string &key) {
+            static Node empty{.type = ObjType::empty, .key = "", .value = ""};
 
-            for (auto &n : nodes) {
+            for (auto &n: nodes) {
                 if (n.key == key) return n;
             }
 
             return empty;
         }
 
-        Node &operator[] (const int index) {
-            static Node empty { .type = ObjType::empty, .key = "", .value = "" };
+        Node &operator[](const int index) {
+            static Node empty{.type = ObjType::empty, .key = "", .value = ""};
             if (nodes.empty()) return empty;
 
             if (index < 0 || index >= nodes.size()) return empty;
             return nodes[index];
         }
 
-        friend std::ostream &operator<< (std::ostream &os, Object &object) {
+        friend std::ostream &operator<<(std::ostream &os, Object &object) {
             os << "{ file path: \"" << object.file_path << "\", number of nodes: " << object.nodes.size() << " }";
             return os;
         }
@@ -147,13 +146,27 @@ namespace json {
         virtual json::Node serialize() = 0;
     };
 
+    class Extension_error : public std::exception {
+    public:
+        explicit Extension_error(std::string &msg) : m_msg(std::move(msg)) {}
+
+        [[nodiscard]] const char *what() const noexcept override {
+            return m_msg.c_str();
+        }
+
+    private:
+        std::string m_msg;
+    };
+
     // read from file
     Object read(const std::string &path);
 
     Node generate_parent(std::string key, std::vector<Node> children);
 
     void add_node(Serializable &obj, Object &json);
+
     void add_node(Node &obj, Object &json);
+
     void write(Object &json);
 }
 

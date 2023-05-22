@@ -149,6 +149,11 @@ void parse(std::vector<std::string> &tokens, std::vector<json::Node> &target) {
 
 
 json::Object json::read(const std::string &path) {
+    if (!path.ends_with(".json")) {
+        std::string error = "ERROR: file \"" + path + "\" has an incompatible extension";
+        throw json::Extension_error(error);
+    }
+
     json::Object json {.file_path = path, .nodes = {}};
 
     std::string text;
@@ -243,6 +248,11 @@ void json::add_node(json::Node &obj, json::Object &json) {
 }
 
 void json::write(json::Object &json) {
+    if (!json.file_path.ends_with(".json")) {
+        std::string error = "ERROR: file \"" + json.file_path + "\" has an incompatible extension";
+        throw json::Extension_error(error);
+    }
+
     std::string str = "{ ";
     for (int i = 0; i < json.nodes.size(); ++i) {
         str += json_node_to_string(json.nodes[i]);
