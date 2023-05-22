@@ -15,6 +15,8 @@ Taking inspiration from *Java*, your class/struct needs to
 extend `Serializable` abstract class, and you need to override 
 the method `serialize()`.
 
+**You can find a usage example inside [main.cpp](https://github.com/Cardisk/serjson/blob/main/main.cpp) file**
+
 ## Writing JSON files
 
 Inside the method `json::Node serialize()` you need to construct a `json::Node`
