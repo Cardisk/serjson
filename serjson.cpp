@@ -64,8 +64,6 @@ void unquote(std::string &str) {
 void parse(std::vector<std::string> &tokens, std::vector<json::Node> &target) {
     if (tokens.back() != "{" && tokens.back() != "[") return;
 
-    // FIXME: this will not parse a file containing only an array like [ 10, 20, 30 ] or [ {}, {}, {} ] for example
-
     bool is_array = false;
     if (tokens.back() == "[") is_array = true;
 
@@ -79,6 +77,9 @@ void parse(std::vector<std::string> &tokens, std::vector<json::Node> &target) {
         if (!is_array) {
             if (tokens.back().starts_with('"')) {
                 str = pop(tokens);
+                while (!str.ends_with('"')) {
+                    str += pop(tokens);
+                }
                 unquote(str);
                 node.key = str;
             }
@@ -91,6 +92,10 @@ void parse(std::vector<std::string> &tokens, std::vector<json::Node> &target) {
         if (tokens.back().starts_with('"')) {
             node.type = json::string;
             str = pop(tokens);
+            while (!str.ends_with('"')) {
+                str += " " + pop(tokens);
+            }
+            str += " ";
             unquote(str);
             node.value = str;
             target.push_back(node);
