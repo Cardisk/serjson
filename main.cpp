@@ -26,7 +26,7 @@ public:
                                                                              c(std::move(c)),
                                                                              d(std::move(d)) {}
 
-    explicit Example() : Example(5.f, "test", {true, false}, Inner()) {}
+    explicit Example() : Example(5.f, "example test", {true, false}, Inner()) {}
 
     // override from the namespace.
     json::Node serialize() override {
@@ -40,6 +40,7 @@ public:
         n_b.key = "b";
         n_b.value = b;
 
+        // TODO: find a better way to create array nodes
         json::Node n_c;
         n_c.type = json::array;
         n_c.key = "c";
@@ -53,6 +54,7 @@ public:
         }
         n_c.value = nodes;
 
+        // TODO: find a better way to create object nodes
         json::Node n_d;
         n_d.type = json::object;
         n_d.key = "d";
