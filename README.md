@@ -59,6 +59,11 @@ Now you have a representation of the JSON, but it's empty.
 To populate it you simply have to call **add_node(Serializable &obj, Object &json)**
 with all the objects you want to save.
 
+If you don't need to store some complex objects, you can also store 
+"primitive" data types like number and strings. 
+You still need to construct a `json::Node`,
+then you can just call **add_node(Node &obj, Object &json)**.
+
 When you are ready to save the data, just call 
 **write(Object &json)** and it will create/open the file provided
 and store your objects inside.
